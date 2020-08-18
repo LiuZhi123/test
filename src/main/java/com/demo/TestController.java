@@ -5,22 +5,22 @@ import com.demo.entity.Url;
 import com.demo.service.shortUrlService;
 import com.demo.util.shortUrlUtil;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.xml.soap.SAAJResult;
 import java.util.Random;
 
-@Controller
+@RestController
 @RequestMapping("/config")
-@ResponseBody
 public class TestController {
+    private static  final Logger logger = LoggerFactory.getLogger(TestController.class);
     @Resource
     private RocketMQTemplate rocketMQTemplate;
     @Resource
@@ -39,13 +39,16 @@ public class TestController {
     public void send(@RequestParam String message){
 //        rocketMQTemplate.convertAndSend();
     }
+//    @Async
     @RequestMapping("/short")
     public String shortUrl(@RequestParam String url){
         String[] urls = shortUrl1.shortUrl(url);
         Url url1 = new Url();
         url1.setLong_url(url);
-        url1.setShort_url(urls[0]);
+        System.out.println();
+        int i  = new Random().nextInt(3);
+        url1.setShort_url(urls[i]);
         shortUrlService.insert(url1);
-        return urls[0];
+        return urls[i];
     }
 }
