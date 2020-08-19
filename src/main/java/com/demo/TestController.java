@@ -39,16 +39,16 @@ public class TestController {
     public void send(@RequestParam String message){
 //        rocketMQTemplate.convertAndSend();
     }
-//    @Async
+    @Async("taskExecutor")
     @RequestMapping("/short")
     public String shortUrl(@RequestParam String url){
         String[] urls = shortUrl1.shortUrl(url);
         Url url1 = new Url();
         url1.setLong_url(url);
-        System.out.println();
         int i  = new Random().nextInt(3);
         url1.setShort_url(urls[i]);
         shortUrlService.insert(url1);
+        logger.info(Thread.currentThread().getName()+"==="+urls[i]);
         return urls[i];
     }
 }
