@@ -5,6 +5,15 @@ import java.io.Serializable;
 public class Url implements Serializable {
     private Integer id;
 
+    public Url(Integer id, String short_url, String long_url) {
+        this.id = id;
+        this.short_url = short_url;
+        this.long_url = long_url;
+    }
+
+    public Url() {
+    }
+
     private String short_url;
 
     private String long_url;
@@ -33,6 +42,31 @@ public class Url implements Serializable {
 
     public void setLong_url(String long_url) {
         this.long_url = long_url == null ? null : long_url.trim();
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = result*17+short_url.hashCode();
+        result = result*17+long_url.hashCode();
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof  Url)){
+            return false;
+        }
+        Url url = (Url) obj;
+        if ( this == url){
+            return true;
+        }
+        if (this.id.equals(url.id)&&this.short_url.equals(url.short_url)&&this.long_url.equals(url.long_url)){
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     @Override

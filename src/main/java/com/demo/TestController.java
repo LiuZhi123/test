@@ -3,7 +3,9 @@ package com.demo;
 import com.alibaba.nacos.api.config.annotation.NacosValue;
 import com.demo.entity.Url;
 import com.demo.service.shortUrlService;
+import com.demo.util.aopConfig;
 import com.demo.util.shortUrlUtil;
+import com.demo.util.socketUtil;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.xml.soap.SAAJResult;
+import java.io.IOException;
 import java.util.Random;
 
 @RestController
@@ -39,6 +42,7 @@ public class TestController {
     public void send(@RequestParam String message){
 //        rocketMQTemplate.convertAndSend();
     }
+    @aopConfig
     @Async("taskExecutor")
     @RequestMapping("/short")
     public String shortUrl(@RequestParam String url){
@@ -50,5 +54,13 @@ public class TestController {
         shortUrlService.insert(url1);
         logger.info(Thread.currentThread().getName()+"==="+urls[i]);
         return urls[i];
+    }
+
+    @RequestMapping("/socket")
+    public void testSocket(@RequestParam String message) throws IOException {
+        socketUtil socketUtil = new socketUtil();
+        socketUtil.sendTcp(message);
+        socketUtil.reciveTcp();
+        System.out.println("发送接受数据实验成功！");
     }
 }
