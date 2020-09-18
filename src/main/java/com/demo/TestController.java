@@ -1,11 +1,14 @@
 package com.demo;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.nacos.api.config.annotation.NacosValue;
 import com.demo.entity.Url;
 import com.demo.service.shortUrlService;
 import com.demo.util.aopConfig;
 import com.demo.util.shortUrlUtil;
 import com.demo.util.socketUtil;
+import com.qq.connect.QQConnectException;
+import com.qq.connect.oauth.Oauth;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,8 +19,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.soap.SAAJResult;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Random;
 
 @RestController
@@ -45,7 +51,7 @@ public class TestController {
     @aopConfig
     @Async("taskExecutor")
     @RequestMapping("/short")
-    public String shortUrl(@RequestParam String url){
+    public String shortUrl(@RequestParam String url, HttpServletRequest request, HttpServletResponse response){
         String[] urls = shortUrl1.shortUrl(url);
         Url url1 = new Url();
         url1.setLong_url(url);
@@ -63,4 +69,28 @@ public class TestController {
         socketUtil.reciveTcp();
         System.out.println("发送接受数据实验成功！");
     }
+
+    @RequestMapping("/third_login")
+    public void fastLogin(HttpServletRequest request,HttpServletResponse response){
+        response.setContentType("text/html;charset=UTF-8");
+        try {
+            response.sendRedirect(new Oauth().getAuthorizeURL(request));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (QQConnectException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @RequestMapping("callback")
+    public void qqCallBack(HttpServletRequest request,HttpServletResponse response){
+        response.setContentType("text/html;charset=utf-8");
+        try {
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
